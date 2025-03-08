@@ -1,12 +1,19 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; // Pastikan ini ada!
+use App\Http\Controllers\HomeController;
+use App\Http\Middleware\EnsureUserIsAuthenticated; // Pastikan middleware diimport
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes();
+
+Route::middleware([EnsureUserIsAuthenticated::class])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::get('/profile', function () {
+        return "Ini adalah halaman profil!";
+    });
+
+    Route::get('/dashboard', function () {
+        return "Ini adalah halaman dashboard!";
+    });
 });
-
-Auth::routes(); // Menambahkan route login dan register
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
